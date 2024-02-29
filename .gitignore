@@ -1,0 +1,12 @@
+node_modules
+.env*
+*.log
+
+/build
+/test
+
+# IDEs
+.vscode
+.idea/*
+!.idea/inspectionProfiles
+

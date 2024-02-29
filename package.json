@@ -1,0 +1,27 @@
+{
+  "name": "color-tiles",
+  "version": "1.0.0",
+  "description": "A simple matching game",
+  "main": "index.js",
+  "scripts": {},
+  "keywords": [],
+  "author": "Gabriel Okamoto",
+  "license": "ISC",
+  "dependencies": {
+    "@umatch/utils": "^14.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.22",
+    "@typescript-eslint/eslint-plugin": "^6.13.2",
+    "@typescript-eslint/parser": "^6.13.2",
+    "@umatch/eslint-config": "^1.4.1",
+    "eslint": "^8.57.0",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-import-resolver-exports": "1.0.0-beta.5",
+    "eslint-import-resolver-typescript": "^3.6.1",
+    "eslint-plugin-import": "^2.29.1",
+    "prettier": "~3.0.3",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.3.3"
+  }
+}

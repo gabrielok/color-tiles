@@ -1,0 +1,19 @@
+{
+  "include": ["src"],
+  "exclude": [],
+  "ts-node": {
+    "transpileOnly": true
+  },
+  "compilerOptions": {
+    "target": "esnext",
+    "module": "nodenext",
+    "lib": ["es2022"],
+    "rootDir": "src",
+    "outDir": "build",
+    "esModuleInterop": true,
+    "strictNullChecks": true,
+    "strictPropertyInitialization": true,
+    "noImplicitAny": true,
+    "strict": true
+  }
+}
