@@ -1,14 +1,12 @@
-import { formatMatrixToString } from '@umatch/utils/array';
+import { formatMatrixToString, transpose } from '@umatch/utils/array';
 import { pickRandom } from '@umatch/utils/math';
 
 const HEIGHT = 15;
 const WIDTH = 23;
 const BLOCKS = 200;
+const COLORS = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
 
-type Board = {
-  x: { [column: number]: Array<number> }; // an array of x-coordinates for each y-coordinate
-  y: { [row: number]: Array<number> }; // an array of y-coordinates for each x-coordinate
-};
+type Board = number[][];
 type Cell = {
   x: number;
   y: number;
@@ -16,20 +14,11 @@ type Cell = {
 };
 
 function makeBoard(): Board {
-  const board = {
-    x: Object.fromEntries(
-      Array.from({ length: HEIGHT }, (_, i) => [
-        i,
-        Array.from({ length: WIDTH }, () => 0),
-      ]),
-    ),
-    y: Object.fromEntries(
-      Array.from({ length: WIDTH }, (_, i) => [
-        i,
-        Array.from({ length: HEIGHT }, () => 0),
-      ]),
-    ),
-  };
+  // we use an array of columns as it is more intuitive to access,
+  // however it must be transposed before printing
+  const board = Array.from({ length: WIDTH }, () =>
+    Array.from({ length: HEIGHT }, () => 0),
+  );
 
   let blockCount = 0;
   let cells = convertBoardToCells(board);
@@ -46,32 +35,32 @@ function makeBoard(): Board {
     const { x, y } = randomCell;
     const freeCellsToPair = [];
     // walk up
-    for (let i = y + 1; i < HEIGHT; i++) {
-      if (board.x[i][x] === 0) {
+    for (let i = y + 2; i < HEIGHT; i++) {
+      if (board[x][i] === 0) {
         freeCellsToPair.push({ x, y: i });
       } else {
         break;
       }
     }
     // walk down
-    for (let i = y - 1; i >= 0; i--) {
-      if (board.x[i][x] === 0) {
+    for (let i = y - 2; i >= 0; i--) {
+      if (board[x][i] === 0) {
         freeCellsToPair.push({ x, y: i });
       } else {
         break;
       }
     }
     // walk right
-    for (let i = x + 1; i < WIDTH; i++) {
-      if (board.y[i][y] === 0) {
+    for (let i = x + 2; i < WIDTH; i++) {
+      if (board[i][y] === 0) {
         freeCellsToPair.push({ x: i, y });
       } else {
         break;
       }
     }
     // walk left
-    for (let i = x - 1; i >= 0; i--) {
-      if (board.y[i][y] === 0) {
+    for (let i = x - 2; i >= 0; i--) {
+      if (board[i][y] === 0) {
         freeCellsToPair.push({ x: i, y });
       } else {
         break;
@@ -79,13 +68,11 @@ function makeBoard(): Board {
     }
     if (freeCellsToPair.length === 0) continue;
 
-    const color = pickRandom([1, 2, 3, 4, 5]);
+    const color = pickRandom(COLORS);
     const pairCell = pickRandom(freeCellsToPair);
     const { x: x2, y: y2 } = pairCell;
-    board.x[y][x] = color;
-    board.y[x][y] = color;
-    board.x[y2][x2] = color;
-    board.y[x2][y2] = color;
+    board[x][y] = color;
+    board[x2][y2] = color;
 
     blockCount += 2;
     boardHasChanged = true;
@@ -94,21 +81,16 @@ function makeBoard(): Board {
 }
 
 function printBoard(board: Board) {
-  const boardMatrix = Array.from({ length: HEIGHT }, (_, i) => {
-    return Array.from({ length: WIDTH }, (__, j) => {
-      return board.x[i][j] || board.y[j][i];
-    });
-  });
-  console.log(formatMatrixToString(boardMatrix));
+  console.log(formatMatrixToString(transpose(board)));
 }
 
 function convertBoardToCells(board: Board): Array<Cell> {
   const cells: Array<Cell> = [];
-  for (const entry of Object.entries(board.x)) {
-    const [y, row] = entry;
-    row.forEach((color, index) => {
-      cells.push({ x: index, y: Number(y), color });
-    });
+  for (let x = 0; x < board.length; x += 1) {
+    const column = board[x];
+    for (let y = 0; y < column.length; y += 1) {
+      cells.push({ x, y, color: column[y] });
+    }
   }
   return cells;
 }
